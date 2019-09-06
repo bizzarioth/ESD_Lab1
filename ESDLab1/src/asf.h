@@ -59,6 +59,9 @@
 #include <ccp.h>
 #include <xmega_reset_cause.h>
 
+// From module: DAC - Digital to Analog Converter
+#include <dac.h>
+
 // From module: GPIO - General purpose Input/Output
 #include <gpio.h>
 
@@ -89,6 +92,9 @@
 
 // From module: System Clock Control - XMEGA A1/A3/A3B/A4/D/E implementation
 #include <sysclk.h>
+
+// From module: TC - Timer Counter
+#include <tc.h>
 
 // From module: USART - Universal Synchronous/Asynchronous Receiver/Transmitter
 #include <usart.h>
