@@ -55,13 +55,18 @@ static inline void _delay_ms(uint16_t t)
 }
 #endif
 
+// Light sensor configuration constants
+#define LIGHT_SAMPLE_RATE   (10)   // Light sensor sample rate (Hz)
+#define SCALED_DATA         (true) // If true, convert sensor data to standard units.
+
 //Function declarations
 void readUSARTMessage(void);
 void publishUSARTMessage(uint8_t *, uint8_t);
 void playSound(uint8_t);
 static void adc_handler(ADC_t *, uint8_t, adc_result_t);
-void intToCharArray(uint16_t);
+void intToCharArray(uint16_t);		//Remove this
 
+//Global variables
 volatile uint8_t received_byte;
 volatile uint8_t received_message[] = "a";
 volatile uint8_t receive_len = 1;
@@ -69,12 +74,16 @@ uint8_t success_str[] = "\n\rSuccess!\n\r";
 uint8_t success_len = 12;
 static uint16_t tempsense;					//Temperature sensor calibration data.
 static volatile uint16_t last_temperature;	//The latest, computed temperature.
-volatile uint8_t tempArray[] = "0000";
+volatile uint8_t tempArray[] = "_0000_00000_\n\r";
 
 int main (void)
 {
+	sensor_t light_dev;						//Light sensor device descriptor
+	
 	struct adc_config         adc_conf;
 	struct adc_channel_config adcch_conf;
+	static sensor_data_t light_data = {.scaled = SCALED_DATA};	
+
 	
 	/* Initialize the board.
 	 * The board-specific conf_board.h file contains the configuration of
@@ -85,7 +94,11 @@ int main (void)
 	sleepmgr_init();
 	irq_initialize_vectors();
 	cpu_irq_enable();
+	sensor_platform_init();
 	
+	/************************************************************************/
+	/* USART CONFIG                                                                     */
+	/************************************************************************/
 	// USART options.
 	static usart_rs232_options_t USART_SERIAL_OPTIONS = {
 		.baudrate = USART_SERIAL_BAUDRATE,
@@ -97,6 +110,9 @@ int main (void)
 	// Initialize USART driver in RS232 mode
 	usart_init_rs232(USART_SERIAL, &USART_SERIAL_OPTIONS);
 
+	/************************************************************************/
+	/* ADC CONFIG                                                                     */
+	/************************************************************************/
 	// Initialize ADC configuration structures.
 	adc_read_configuration(&ADCA, &adc_conf);
 	adcch_read_configuration(&ADCA, ADC_CH0, &adcch_conf);
@@ -135,11 +151,37 @@ int main (void)
 	// Enable the ADC 
 	adc_enable(&ADCA);
 	
-	//Test ADC
+	
+	/************************************************************************/
+	/* Light Sensor CONFIG                                                                     */
+	/************************************************************************/
+	//Attach descriptors to the defined sensor devices.
+	sensor_attach(&light_dev, SENSOR_TYPE_LIGHT, 0, 0);
+	//check initialization error
+	if (light_dev.err) {
+			//put in uart
+		while (true) {
+			/* Error occurred, loop forever */
+		}
+	}
+	//Set sample interval for the light sensor
+	if (sensor_set_sample_rate(&light_dev, LIGHT_SAMPLE_RATE) != true) {
+		//printf("Error setting light sensor sample rate.\r\n");
+	}	
+	
+	
+	/************************************************************************/
+	/* LOOP
+	/*	Infinite loop for continuous functioning of system                                                                    */
+	/************************************************************************/
 	while (true) {
 		//Add Delay
 		adc_start_conversion(&ADCA, ADC_CH0);
+		sensor_get_light(&light_dev, &light_data);
+		sprintf(tempArray,"_[%4d]_[%5d]_\n\r",last_temperature,light_data.light.value);
+		publishUSARTMessage(tempArray,14);
 		_delay_ms(2000);
+		//Call delay twice for 60 secs each.
 	}
 	
 	//Testing out USART Functions
@@ -226,10 +268,10 @@ static void adc_handler(ADC_t *adc, uint8_t ch_mask, adc_result_t result) {
 
 	// Store temperature in global variable.
 	last_temperature = temperature & 0xffff;
-	sprintf(tempArray,"%d",last_temperature);
-	publishUSARTMessage(tempArray,4);
+// 	sprintf(tempArray,"%d",last_temperature);
+// 	publishUSARTMessage(tempArray,4);
 	// Start next conversion.
-	//adc_start_conversion(adc, ch_mask);
+	//adc_start_conversion(adc, ch_mask);					//Probably sample lights here
 }
 
 void intToCharArray(uint16_t num) {

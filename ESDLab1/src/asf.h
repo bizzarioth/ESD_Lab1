@@ -62,6 +62,9 @@
 // From module: DAC - Digital to Analog Converter
 #include <dac.h>
 
+// From module: Delay routines
+#include <delay.h>
+
 // From module: GPIO - General purpose Input/Output
 #include <gpio.h>
 
@@ -83,6 +86,9 @@
 // From module: Part identification macros
 #include <parts.h>
 
+// From module: Sensors - Common Sensor Service
+#include <sensor.h>
+
 // From module: Sleep Controller driver
 #include <sleep.h>
 
@@ -95,6 +101,16 @@
 
 // From module: TC - Timer Counter
 #include <tc.h>
+
+// From module: TWI - Two-Wire Interface - XMEGA implementation
+#include <twi_master.h>
+#include <twi_slave.h>
+#include <xmega_twi/twi_master.h>
+#include <xmega_twi/twi_slave.h>
+
+// From module: TWI - Two-wire Master and Slave Interface
+#include <twim.h>
+#include <twis.h>
 
 // From module: USART - Universal Synchronous/Asynchronous Receiver/Transmitter
 #include <usart.h>
