@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "164859917448",
+    "firebase_url": "https://esdlab1.firebaseio.com",
+    "project_id": "esdlab1",
+    "storage_bucket": "esdlab1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:164859917448:android:d02d25e677eaded8891b3d",
+        "android_client_info": {
+          "package_name": "io.yashxd.esdlab1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "164859917448-h5p3v2dtmotpiaovrli8is8nqdulf2fg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwV5qR2Z5r8F18TKlLPNEOMF29dyGuwCo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "164859917448-h5p3v2dtmotpiaovrli8is8nqdulf2fg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
