@@ -1,4 +1,4 @@
-#main
+#---------------------------MAIN-----------------------------
 import tkinter as tk
 from tkinter import scrolledtext
 import tkinter.ttk as ttk
@@ -9,8 +9,11 @@ import threading
 import time
 import os
 import GUI_uart
+import csv
 
 global all_csvdata_list
+global time_list
+
 port_id='COM5'
 baudrate=4800
 #port_id=''
@@ -23,6 +26,17 @@ for port,desc,hwid in ports:
 	#print("{}: {} [{}]".format(port, desc, hwid))		//Get a list of all available ports
 	port_list.append('{}'.format(port))
 	print(port_list)
+
+#-Call this once -------------------------------------#
+with open(csvfile_path, mode='r',newline='') as csv_file:
+	csv_reader = csv.reader(csv_file, delimiter=',')
+	all_csvdata_list=list(csv_reader)
+	#GOT LIST OF ALL CSV DATA--->all_csvdata_list---->[['Temperature', 'Light', 'Time'],[temp,lite,t1]...#
+	#print('time')
+	time_list=[]
+	for i in range(1,len(all_csvdata_list)):
+		#print(all_csvdata_list[i][2])
+		time_list.append(all_csvdata_list[i][2])
 
 if __name__=="__main__":
 	main_gui = tk.Tk()
@@ -76,7 +90,7 @@ if __name__=="__main__":
 	frame_1 = tk.Frame(main_gui, bd = 3, relief = 'groove')
 	frame_2 = tk.Frame(main_gui,bd=4,relief = 'groove')
 	frame_3 = tk.Frame(main_gui,bd=2,relief = 'groove')
-	frame_2.grid(row=0,column=0)
+	frame_2.grid(row=0,column=0,pady=15)
 	frame_1.grid(row=1,column=0)
 	frame_3.grid(row=2,column=0,pady=15)
 	#-------------------------------------#
@@ -93,8 +107,8 @@ if __name__=="__main__":
 	#--------------------------------------------------------#
 
 	#LABELS----------------------------------------------------		[font=("Arial Bold", 50)]
-	temperature_label=tk.Label(frame_1,text='Current temperature_label:').grid(row=0,column=0)
-	light_label=tk.Label(frame_1,text='Current Light Intensity :').grid(row=1,column=0)
+	temperature_label=tk.Label(frame_1,text='Current temperature_label	:').grid(row=0,column=0,padx=15)
+	light_label=tk.Label(frame_1,text='Current Light Intensity :').grid(row=1,column=0,padx=5)
 	port_label=tk.Label(frame_2,text='COM-PORT :').grid(row=0,column=0)
 	baud_label=tk.Label(frame_2,text='Baud Rate :').grid(row=0,column=2)
 
@@ -104,16 +118,24 @@ if __name__=="__main__":
 	pastvalue_label=tk.Label(frame_1,text='Show past data of : (mins)').grid(row=3,pady=10)	#below current value
 	#--------------------------------------------------------#
 
-	#-------Number of MINutes--------------------------------#
-	#Listview/Combobox---------------------------------------#
-
-	#--SPINBOX IMPLEMENTATION------------------------------------------#
+	#-------Number of MINutes---------------------------------------#
+		#--Listview/Combobox--[OPTION]--#
+		#--SPINBOX IMPLEMENTATION---------------------#
 	'''pastvalue=tk.IntVar()
 				pastvalue_spinbox=tk.Spinbox(frame_1,textvariable=pastvalue,from_=2,to=10,increment=2,width=5)
 				pastvalue_spinbox.grid(row=3,column=1,pady=10)
 				print(pastvalue)'''
-	#---------------------------------------------------------#
+	#---------------------------------------------#
+		#--LISTBOX IMPLEMENTATION---------------------#
+	tk_list_var=tk.StringVar()
+	tk_list_var.set(time_list)
+	LB_TEST=tk.Listbox(frame_1,listvariable=tk_list_var,selectmode='SINGLE',height=4,width=8)
+	LB_TEST.grid(row=3,column=1,pady=10)
 	
+	#---------------------------------------------#
+	
+
+	#----------------------------------------------------------------#
 	#TEXTBOXs-{OUTPUTS}----------------------------------------------#
 	temperature_val=38.2
 	lighti_val=1234			#light intensity
@@ -131,15 +153,15 @@ if __name__=="__main__":
 	#---------------------------------------------------------#
 
 	#SERIAL_SETUP_INPUTS-------------------------------------------
-		#---------------#EntryBoxes
-	#PORT_txt=tk.Entry(frame_2,width=10)
-	#BAUDR_txt=tk.Entry(frame_2,width=10)
-	#PORT_txt.grid(row=0,column=1)
-	#BAUDR_txt.grid(row=0,column=3)
-	#PORT_txt.insert('end','COM5')
-		#get port and baudrate
-	#port_id=PORT_txt.get()
-	#baudrate=BAUDR_txt.get()
+		#---------------#EntryBoxes-----------------------------
+	'''PORT_txt=tk.Entry(frame_2,width=10)
+				BAUDR_txt=tk.Entry(frame_2,width=10)
+				PORT_txt.grid(row=0,column=1)
+				BAUDR_txt.grid(row=0,column=3)
+				PORT_txt.insert('end','COM5')
+					#get port and baudrate
+				port_id=PORT_txt.get()
+				baudrate=BAUDR_txt.get()'''
 		#---------------#DROPDOWNs------------------------------
 	'''fake' list_of_ports'''
 	#list_of_ports=['COM6','COM3','COM5','COM2','COM7']

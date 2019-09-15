@@ -106,11 +106,12 @@ def update_ui(tb_name1,temp_disp_val,lite_disp_val):
 	global update_period
 	global all_csvdata_list
 	global time_list
-	time_list=[]
+	
 	#UPDATE GUI
 	while (1):
 		if Start_write_flag:	
 			if filter_data[0]:
+				time_list=[] 				#clear Gui variable
 				#print(filter_data)
 				tb_name1.insert('end',filter_data)
 				tb_name1.insert('end','\n')
@@ -122,7 +123,7 @@ def update_ui(tb_name1,temp_disp_val,lite_disp_val):
 					csv_reader = csv.reader(csv_file, delimiter=',')
 					all_csvdata_list=list(csv_reader)
 				#GOT LIST OF ALL CSV DATA--->all_csvdata_list---->[['Temperature', 'Light', 'Time'],[temp,lite,t1]...#
-				print('time')
+				#print('time')
 				for i in range(1,length):
 					print(all_csvdata_list[i][2])
 					time_list.append(all_csvdata_list[i][2])
